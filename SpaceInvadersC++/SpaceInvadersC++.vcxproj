@@ -139,12 +139,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Character.cpp" />
+    <ClCompile Include="Objects.cpp" />
     <ClCompile Include="SpaceInvadersC++.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Character.h" />
+    <ClInclude Include="Objects.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdfix.h" />
     <ClInclude Include="World.h" />

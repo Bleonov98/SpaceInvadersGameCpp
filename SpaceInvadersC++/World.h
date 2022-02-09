@@ -1,5 +1,5 @@
 #include "stdfix.h"
-#include "Character.h"
+#include "Objects.h"
 
 class World
 {
@@ -93,9 +93,11 @@ private:
 
 public:
 
+    // void CreateWorld();
+
     void RunWorld();
 
-   /* void DrawTitle();*/
+    // void DrawTitle();
 
     void DrawArea();
 
