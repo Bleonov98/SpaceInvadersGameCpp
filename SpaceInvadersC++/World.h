@@ -1,10 +1,12 @@
 #include "stdfix.h"
+#include "Character.h"
 
 class World
 {
 
 private:
 
+    HINSTANCE hInstance;
 
     class VirtualTerminal {
     public:
@@ -62,7 +64,7 @@ private:
         }
 
         void SetScreenSize() {
-            int Width = 150, Height = 60;
+            int Width = 150, Height = 56, err = 40;
 
             HANDLE hWnd = GetStdHandle(STD_OUTPUT_HANDLE);
 
@@ -78,7 +80,7 @@ private:
             SetConsoleScreenBufferSize(hWnd, bufferSize);
 
             SetWindowPos(hWindowConsole, HWND_NOTOPMOST, 
-                (monitorSize.X / 2 - Width * 4 - 30), (monitorSize.Y / 2 - Height * 8 - 30), 0, 0, 
+                (monitorSize.X / 2 - Width * 4 - err), (monitorSize.Y / 2 - Height * 8 - err), 0, 0, 
                 SWP_NOZORDER | SWP_NOREPOSITION | SWP_NOREDRAW);
 
             SetConsoleWindowInfo(hWnd, TRUE, &Rect);
@@ -93,7 +95,9 @@ public:
 
     void RunWorld();
 
+   /* void DrawTitle();*/
 
+    void DrawArea();
 
 };
 
