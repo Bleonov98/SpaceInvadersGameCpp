@@ -1,5 +1,11 @@
 #include "World.h"
 
+void World::SetPos(int x, int y)
+{
+	sprintf_s(coord, "%s%d;%dH", CSI, y, x);
+	printf(coord);
+}
+
 void World::DrawArea()
 {
 	// Set console code page to UTF-8 so console known how to interpret string data
@@ -35,8 +41,7 @@ void World::DrawArea()
 	setvbuf(stdout, NULL, _IONBF, 0);
 }
 
-void World::RunWorld()
-{
+void World::CreateWorld() {
 	term.Terminal();
 	term.SetScreenSize();
 
@@ -44,10 +49,24 @@ void World::RunWorld()
 	printf(CSI "?25l");
 
 	DrawArea();
+}
+
+void World::RunWorld()
+{
+	CreateWorld();
+	
+	SetPos(0, 0);
+
+	for (int i = 0; i < 45; i++)
+	{
+		for (int j = 0; j < 150; j++)
+		{
+			cout << videoMemory[i][j];
+		}
+	}
 
 	while (true)
 	{
-
 	}
 
 	printf(CSI "?1049l");

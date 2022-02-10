@@ -3,7 +3,7 @@
 
 int main()
 {
-    World wd;
+    World wd(150, 45);
     wd.RunWorld();
 
     return 0;

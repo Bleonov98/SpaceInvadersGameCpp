@@ -1,10 +1,14 @@
 #include "stdfix.h"
-#include "Objects.h"
+#include "GameObject.h"
 
 class World
 {
 
 private:
+
+    char coord[50];
+
+    vector<vector <char>> videoMemory;
 
     HINSTANCE hInstance;
 
@@ -93,13 +97,38 @@ private:
 
 public:
 
-    // void CreateWorld();
+    World() {};
 
-    void RunWorld();
+    World(int winWidth, int winHeight) {
+        videoMemory.resize(winHeight);
 
-    // void DrawTitle();
+        for (int i = 0; i < winHeight; i++)
+        {
+            videoMemory[i].resize(winWidth);
+        }
+
+        SetPos(0, 0);
+
+        for (int i = 0; i < winHeight; i++)
+        {
+            for (int j = 0; j < winWidth; j++)
+            {
+                videoMemory[i][j] = '#';
+            }
+            cout << endl;
+        }
+    };
+
+    void SetPos(int x, int y);
+
+    void CreateWorld();
 
     void DrawArea();
 
+    // void DrawTitle();
+
+    // void Comunication();
+
+    void RunWorld();
 };
 
