@@ -140,11 +140,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="MyCharGun.cpp" />
     <ClCompile Include="SpaceInvadersC++.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="MyCharGun.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdfix.h" />
     <ClInclude Include="World.h" />

@@ -1,25 +1,25 @@
 #include "stdfix.h"
 #include "GameObject.h"
+#include "MyCharGun.h"
 
 class World
 {
 
 private:
 
-    char coord[50];
-
-    vector<vector <char>> videoMemory;
-
     HINSTANCE hInstance;
 
     class VirtualTerminal {
     public:
+
+        HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+        HANDLE hOutSwitch = GetStdHandle(STD_OUTPUT_HANDLE);
+
         HWND hWindowConsole = GetForegroundWindow();
 
         bool Terminal() {
 
             // Set output mode to handle virtual terminal sequences
-            HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
             if (hOut == INVALID_HANDLE_VALUE)
             {
                 return false;
@@ -70,8 +70,6 @@ private:
         void SetScreenSize() {
             int Width = 150, Height = 56, err = 40;
 
-            HANDLE hWnd = GetStdHandle(STD_OUTPUT_HANDLE);
-
             COORD monitorSize = { GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN) };
             COORD bufferSize = { Width, Height };
 
@@ -81,53 +79,32 @@ private:
             Rect.Bottom = Height - 1;
             Rect.Right = Width - 1;
 
-            SetConsoleScreenBufferSize(hWnd, bufferSize);
+            SetConsoleScreenBufferSize(hOut, bufferSize);
 
             SetWindowPos(hWindowConsole, HWND_NOTOPMOST, 
                 (monitorSize.X / 2 - Width * 4 - err), (monitorSize.Y / 2 - Height * 8 - err), 0, 0, 
                 SWP_NOZORDER | SWP_NOREPOSITION | SWP_NOREDRAW);
 
-            SetConsoleWindowInfo(hWnd, TRUE, &Rect);
+            SetConsoleWindowInfo(hOut, TRUE, &Rect);
 
             SetWindowLong(hWindowConsole, GWL_STYLE, GetWindowLong(hWindowConsole, GWL_STYLE) & ~WS_MAXIMIZEBOX & ~WS_SIZEBOX);
+
+            SetConsoleTitleA("Space Invaders C++");
         }
+
     };
 
-    VirtualTerminal term;
+    VirtualTerminal term; // console setting
 
 public:
 
-    World() {};
-
-    World(int winWidth, int winHeight) {
-        videoMemory.resize(winHeight);
-
-        for (int i = 0; i < winHeight; i++)
-        {
-            videoMemory[i].resize(winWidth);
-        }
-
-        SetPos(0, 0);
-
-        for (int i = 0; i < winHeight; i++)
-        {
-            for (int j = 0; j < winWidth; j++)
-            {
-                videoMemory[i][j] = '#';
-            }
-            cout << endl;
-        }
-    };
-
-    void SetPos(int x, int y);
-
     void CreateWorld();
 
-    void DrawArea();
+    void Ticks();
 
     // void DrawTitle();
 
-    // void Comunication();
+    void DrawArea();
 
     void RunWorld();
 };

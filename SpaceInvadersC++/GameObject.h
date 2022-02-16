@@ -5,53 +5,45 @@ class GameObject
 {
 private:
 
-	
+	char coord[50];
 
 public:
 
-	GameObject() {};
+	int _width, _height, _x, _y;
 
-	GameObject(int width, int height) {
+	HANDLE _hOut;
 
-		vector<vector<char>> obj;
-		obj.resize(height);
-		for (int i = 0; i < height; i++)
-		{
-			obj.resize(width);
-		}
-
-		for (int i = 0; i < height; i++)
-		{
-			for (int j = 0; j < width; j++)
-			{
-				obj[i][j] = '#';
-			}
-		}
+	GameObject(HANDLE hOut, int width, int height, int x, int y) {
+		_hOut = hOut, _width = width, _height = height, _x = x, _y = y;
+		DrawObject();
 	};
 
-	void SpawnObj();
+	void SetPos(int x, int y);
 
+	void DrawObject();
+
+	void EraseObject();
 };
 
 class StaticObjects: public GameObject 
 {
 private:
 
+
+
 public:
 
 };
 
-class Characters: public GameObject 
+class Bullet : public GameObject 
+{
+
+};
+
+class Enemies: public GameObject 
 {
 private:
 
-	vector<pair<int, int>> dir;
-	vector<pair<int, int>> bullet;
-
 public:
-
-	void MoveChar(int width, int height, int x, int y);
-
-	void GunShot(int x, int y);
 
 };

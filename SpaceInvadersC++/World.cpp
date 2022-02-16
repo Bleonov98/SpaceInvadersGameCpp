@@ -1,11 +1,5 @@
 #include "World.h"
 
-void World::SetPos(int x, int y)
-{
-	sprintf_s(coord, "%s%d;%dH", CSI, y, x);
-	printf(coord);
-}
-
 void World::DrawArea()
 {
 	// Set console code page to UTF-8 so console known how to interpret string data
@@ -45,29 +39,32 @@ void World::CreateWorld() {
 	term.Terminal();
 	term.SetScreenSize();
 
-	printf(CSI "?1049h");
-	printf(CSI "?25l");
+	printf(CSI "?1049h"); // enable alt buffer
+	printf(CSI "?25l"); // hide cursor blinking
 
 	DrawArea();
+
+	thread timerTh(&World::Ticks, this);
+	timerTh.detach();
+	
+	MyCharGun myGun(term.hOut, 5, 3, 72, 45);
+	thread myChar(&MyCharGun::RunGun, myGun);
+	myChar.detach();
+}
+
+void World::Ticks()
+{
+	this_thread::sleep_for(chrono::milliseconds(10));
 }
 
 void World::RunWorld()
 {
 	CreateWorld();
-	
-	SetPos(0, 0);
-
-	for (int i = 0; i < 45; i++)
-	{
-		for (int j = 0; j < 150; j++)
-		{
-			cout << videoMemory[i][j];
-		}
-	}
 
 	while (true)
 	{
 	}
 
-	printf(CSI "?1049l");
+	printf(CSI "?1049l"); // enable main buffer
 }
+
