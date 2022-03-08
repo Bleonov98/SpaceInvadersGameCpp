@@ -23,6 +23,6 @@ void MyCharGun::RunGun()
 	this_thread::sleep_for(1ms);
 	while (true) {
 		MoveMyGun();
-		Sleep(30);
+		Sleep(35);
 	}
 }

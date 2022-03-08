@@ -35,8 +35,41 @@ void World::DrawArea()
 	setvbuf(stdout, NULL, _IONBF, 0);
 }
 
+void World::Refresh()
+{
+	this_thread::sleep_for(chrono::milliseconds(10));	
+	GameObject tool; // for tools
+
+	tool.SetPos(0, 0);
+
+	for (int y = 0; y < 45; y++)
+	{
+		for (int x = 0; x < 150; x++)
+		{
+			cout << vBuf[y][x];
+		}
+	}
+
+	while (worldIsRun)
+	{
+		for (int i = 0; i < 45; i++)
+		{
+			for (int j = 0; j < 150; j++)
+			{
+				if (vBuf2[i][j] == vBuf[i][j])
+				{
+					continue;
+				}
+				cout << vBuf2[i][j];
+			}
+		}
+		cout << flush;
+		copy(vBuf2.begin(), vBuf2.end(), vBuf.begin());
+	}
+}
+
 void World::CreateWorld() {
-	term.Terminal();
+	term.Terminal();  // Set virtual terminal settings
 	term.SetScreenSize();
 
 	printf(CSI "?1049h"); // enable alt buffer
@@ -44,17 +77,12 @@ void World::CreateWorld() {
 
 	DrawArea();
 
-	thread timerTh(&World::Ticks, this);
-	timerTh.detach();
-	
-	MyCharGun myGun(term.hOut, 5, 3, 72, 45);
-	thread myChar(&MyCharGun::RunGun, myGun);
-	myChar.detach();
-}
+	GameObject myGun(vBuf, 5, 3, 15, 15); // Player cannon size and position 
+	/*thread myChar(&MyCharGun::RunGun, myGun);
+	myChar.detach();*/
 
-void World::Ticks()
-{
-	this_thread::sleep_for(chrono::milliseconds(10));
+	thread Ticks(&World::Refresh, this);
+	Ticks.detach();
 }
 
 void World::RunWorld()

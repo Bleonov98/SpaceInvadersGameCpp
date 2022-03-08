@@ -11,10 +11,13 @@ public:
 
 	int _width, _height, _x, _y;
 
-	HANDLE _hOut;
+	vector <vector<char>> * _vBuf;
 
-	GameObject(HANDLE hOut, int width, int height, int x, int y) {
-		_hOut = hOut, _width = width, _height = height, _x = x, _y = y;
+	GameObject() {}; // for tools
+
+	GameObject(vector <vector<char>>& vBuf, int width, int height, int x, int y) {
+		_width = width, _height = height, _x = x, _y = y;
+
 		DrawObject();
 	};
 

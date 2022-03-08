@@ -5,6 +5,12 @@
 class World
 {
 
+    bool worldIsRun = true;
+    int activeConsBuf = 0;
+
+    vector<vector<char>> vBuf;
+    vector<vector<char>> vBuf2;
+
 private:
 
     HINSTANCE hInstance;
@@ -13,7 +19,8 @@ private:
     public:
 
         HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
-        HANDLE hOutSwitch = GetStdHandle(STD_OUTPUT_HANDLE);
+
+        CONSOLE_SCREEN_BUFFER_INFO csbi;
 
         HWND hWindowConsole = GetForegroundWindow();
 
@@ -98,13 +105,38 @@ private:
 
 public:
 
-    void CreateWorld();
+    World() {
 
-    void Ticks();
+        vBuf.resize(45);
+        for (int i = 0; i < 45; i++)
+        {
+            vBuf[i].resize(150);
+        }
+
+        for (int i = 0; i < 45; i++)
+        {
+            for (int j = 0; j < 150; j++)
+            {
+                vBuf[i][j] = ' ';
+            }
+        }
+
+        vBuf2.resize(45);
+        for (int i = 0; i < 45; i++)
+        {
+            vBuf2[i].resize(150);
+        }       
+
+        vBuf[44][74] = '*';
+    }
 
     // void DrawTitle();
 
     void DrawArea();
+
+    void CreateWorld();
+
+    void Refresh();
 
     void RunWorld();
 };
