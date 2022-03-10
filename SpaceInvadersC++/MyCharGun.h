@@ -6,7 +6,7 @@ private:
 
 public:
 
-	MyCharGun(vector <vector<char>> &vBuf, int width, int height, int x, int y) : GameObject(vBuf, width, height, x, y) {
+	MyCharGun(char vBuf[][150], int width, int height, int x, int y) : GameObject(vBuf, width, height, x, y) {
 	};
 
 	void MoveMyGun();

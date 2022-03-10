@@ -38,33 +38,26 @@ void World::DrawArea()
 void World::Refresh()
 {
 	this_thread::sleep_for(chrono::milliseconds(10));	
-	GameObject tool; // for tools
+	GameObject pos; // Cursor Position
 
-	tool.SetPos(0, 0);
-
-	for (int y = 0; y < 45; y++)
-	{
-		for (int x = 0; x < 150; x++)
-		{
-			cout << vBuf[y][x];
-		}
-	}
+	pos.SetPos(0, 0);
 
 	while (worldIsRun)
 	{
-		for (int i = 0; i < 45; i++)
+		for (int y = 0; y < 45; y++)
 		{
-			for (int j = 0; j < 150; j++)
+			for (int x = 0; x < 150; x++)
 			{
-				if (vBuf2[i][j] == vBuf[i][j])
+				if (prevBuf[y][x] == vBuf[y][x])
 				{
 					continue;
 				}
-				cout << vBuf2[i][j];
+				pos.SetPos(x, y);
+				cout << vBuf[y][x];
 			}
 		}
 		cout << flush;
-		copy(vBuf2.begin(), vBuf2.end(), vBuf.begin());
+		memcpy(prevBuf, vBuf, 45*150);
 	}
 }
 
@@ -77,7 +70,7 @@ void World::CreateWorld() {
 
 	DrawArea();
 
-	GameObject myGun(vBuf, 5, 3, 15, 15); // Player cannon size and position 
+	MyCharGun myGun(vBuf, 5, 3, 73, 44); // Player cannon size and position 
 	/*thread myChar(&MyCharGun::RunGun, myGun);
 	myChar.detach();*/
 

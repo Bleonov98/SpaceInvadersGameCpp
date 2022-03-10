@@ -8,7 +8,6 @@ void GameObject::SetPos(int x, int y)
 
 void GameObject::DrawObject()
 {
-	_vBuf = ;
 }
 
 void GameObject::EraseObject()
