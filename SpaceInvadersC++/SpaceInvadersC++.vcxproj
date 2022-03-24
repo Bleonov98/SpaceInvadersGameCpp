@@ -146,6 +146,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="BufferStruct.h" />
     <ClInclude Include="MyCharGun.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdfix.h" />

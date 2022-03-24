@@ -1,5 +1,11 @@
 #include "World.h"
 
+void World::SetPos(int x, int y)
+{
+	sprintf_s(coord, "%s%d;%dH", CSI, y, x);
+	printf(coord);
+}
+
 void World::DrawArea()
 {
 	// Set console code page to UTF-8 so console known how to interpret string data
@@ -25,7 +31,7 @@ void World::DrawArea()
 				if (0 != dwResourceSize)
 				{
 					for (int i = 0; i < strnlen(area, 8915); i++) {
-						cout << area[i];
+						std::cout << area[i];
 					}
 				}
 			}
@@ -35,33 +41,8 @@ void World::DrawArea()
 	setvbuf(stdout, NULL, _IONBF, 0);
 }
 
-void World::Refresh()
-{
-	this_thread::sleep_for(chrono::milliseconds(10));	
-	GameObject pos; // Cursor Position
-
-	pos.SetPos(0, 0);
-
-	while (worldIsRun)
-	{
-		for (int y = 0; y < 45; y++)
-		{
-			for (int x = 0; x < 150; x++)
-			{
-				if (prevBuf[y][x] == vBuf[y][x])
-				{
-					continue;
-				}
-				pos.SetPos(x, y);
-				cout << vBuf[y][x];
-			}
-		}
-		cout << flush;
-		memcpy(prevBuf, vBuf, 45*150);
-	}
-}
-
 void World::CreateWorld() {
+
 	term.Terminal();  // Set virtual terminal settings
 	term.SetScreenSize();
 
@@ -69,21 +50,35 @@ void World::CreateWorld() {
 	printf(CSI "?25l"); // hide cursor blinking
 
 	DrawArea();
-
-	MyCharGun myGun(vBuf, 5, 3, 73, 44); // Player cannon size and position 
-	/*thread myChar(&MyCharGun::RunGun, myGun);
-	myChar.detach();*/
-
-	thread Ticks(&World::Refresh, this);
-	Ticks.detach();
+	
 }
 
 void World::RunWorld()
 {
 	CreateWorld();
 
-	while (true)
+	MyCharGun myGun(&wData, 5, 3, COLS / 2 - 2, ROWS - 3, '*'); // Player cannon size and position
+	thread runGun(&MyCharGun::RunGun, myGun);
+	runGun.detach();
+
+	SetPos(0, 0);
+
+	while (worldIsRun)
 	{
+		for (int y = 0; y < ROWS; y++)
+		{
+			for (int x = 0; x < COLS; x++)
+			{
+				if (prevBuf[y][x] == wData.vBuf[y][x])
+				{
+					continue;
+				}
+				SetPos(x, y);
+				cout << wData.vBuf[y][x];
+			}
+		}
+		cout << flush;
+		memcpy(prevBuf, wData.vBuf, ROWS * COLS);
 	}
 
 	printf(CSI "?1049l"); // enable main buffer

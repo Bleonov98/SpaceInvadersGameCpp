@@ -1,12 +1,11 @@
 #pragma once
 #include "GameObject.h"
+
 class MyCharGun: public GameObject
 {
-private:
-
 public:
 
-	MyCharGun(char vBuf[][150], int width, int height, int x, int y) : GameObject(vBuf, width, height, x, y) {
+	MyCharGun(wd* wData, int width, int height, int x, int y, char symbol) : GameObject(wData, width, height, x, y, symbol) {
 	};
 
 	void MoveMyGun();

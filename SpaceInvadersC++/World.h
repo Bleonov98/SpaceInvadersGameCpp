@@ -1,17 +1,18 @@
-#include "stdfix.h"
+#pragma once
 #include "GameObject.h"
 #include "MyCharGun.h"
 
 class World
 {
+private:
+
+    wd wData;
+
+    char prevBuf[ROWS][COLS]{ ' ' };
+    char coord[50];
 
     bool worldIsRun = true;
     int activeConsBuf = 0;
-
-    char vBuf[45][150]{' '};
-    char prevBuf[45][150]{' '};
-
-private:
 
     HINSTANCE hInstance;
 
@@ -104,14 +105,18 @@ private:
     VirtualTerminal term; // console setting
 
 public:
+
+    void SetPos(int x, int y);
+
     // void DrawTitle();
 
     void DrawArea();
 
     void CreateWorld();
 
-    void Refresh();
-
     void RunWorld();
+
+    
+
 };
 

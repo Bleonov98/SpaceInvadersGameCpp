@@ -44,6 +44,9 @@
     <ClInclude Include="MyCharGun.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="BufferStruct.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="SpaceInvadersC++.rc">
