@@ -1,32 +1,38 @@
 #pragma once
-#include "stdfix.h"
+#include "BufferStruct.h"
 
 class GameObject
 {
-private:
-
-	char coord[50];
-
 public:
 
 	int _width, _height, _x, _y;
+	char _symbol;
 
-	vector <vector<char>> * _vBuf;
-
-	GameObject() {}; // for tools
-
-	GameObject(vector <vector<char>>& vBuf, int width, int height, int x, int y) {
-		_width = width, _height = height, _x = x, _y = y;
+	GameObject(wd* wData, int width, int height, int x, int y, char symbol) {
+		_width = width, _height = height, _x = x, _y = y, _symbol = symbol;
+		_wData = wData;
 
 		DrawObject();
 	};
 
-	void SetPos(int x, int y);
+protected:
+
+	wd* _wData;
 
 	void DrawObject();
 
 	void EraseObject();
 };
+
+
+
+
+
+
+
+
+
+
 
 class StaticObjects: public GameObject 
 {
@@ -38,15 +44,36 @@ public:
 
 };
 
-class Bullet : public GameObject 
-{
 
-};
+
+
+
+
+
 
 class Enemies: public GameObject 
 {
 private:
 
 public:
+
+};
+
+
+
+
+
+
+
+
+class Bullet : public GameObject
+{
+
+public:
+
+	Bullet(wd* wData, int width, int height, int x, int y, char symbol) : GameObject(wData, width, height, x, y, symbol) {
+	};
+
+	void MyGunShot();
 
 };

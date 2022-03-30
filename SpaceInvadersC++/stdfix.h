@@ -1,6 +1,9 @@
+#pragma once
+
 #include <iostream>
 #include <string>
 #include <vector>
+#include <list>
 #include <thread>
 #include <wchar.h>
 #include <stdlib.h>
@@ -13,3 +16,4 @@
 #define CSI "\x1b["
 
 using namespace std;
+using namespace chrono;
