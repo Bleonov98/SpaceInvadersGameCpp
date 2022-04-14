@@ -9,8 +9,5 @@ public:
 	};
 
 	void MoveMyGun();
-
-	void RunGun();
-
 };
 

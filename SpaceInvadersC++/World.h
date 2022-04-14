@@ -1,17 +1,19 @@
-#include "stdfix.h"
-#include "GameObject.h"
+#pragma once
+#include "Tools.h"
 #include "MyCharGun.h"
 
 class World
 {
+private:
+
+    wd wData;
+    vct objVect;
+
+    char prevBuf[ROWS][COLS]{ ' ' };
+    char coord[50];
 
     bool worldIsRun = true;
-    int activeConsBuf = 0;
-
-    vector<vector<char>> vBuf;
-    vector<vector<char>> vBuf2;
-
-private:
+    bool bulletGo = false;
 
     HINSTANCE hInstance;
 
@@ -88,8 +90,8 @@ private:
 
             SetConsoleScreenBufferSize(hOut, bufferSize);
 
-            SetWindowPos(hWindowConsole, HWND_NOTOPMOST, 
-                (monitorSize.X / 2 - Width * 4 - err), (monitorSize.Y / 2 - Height * 8 - err), 0, 0, 
+            SetWindowPos(hWindowConsole, HWND_NOTOPMOST,
+                (monitorSize.X / 2 - Width * 4 - err), (monitorSize.Y / 2 - Height * 8 - err), 0, 0,
                 SWP_NOZORDER | SWP_NOREPOSITION | SWP_NOREDRAW);
 
             SetConsoleWindowInfo(hOut, TRUE, &Rect);
@@ -105,39 +107,18 @@ private:
 
 public:
 
-    World() {
-
-        vBuf.resize(45);
-        for (int i = 0; i < 45; i++)
-        {
-            vBuf[i].resize(150);
-        }
-
-        for (int i = 0; i < 45; i++)
-        {
-            for (int j = 0; j < 150; j++)
-            {
-                vBuf[i][j] = ' ';
-            }
-        }
-
-        vBuf2.resize(45);
-        for (int i = 0; i < 45; i++)
-        {
-            vBuf2[i].resize(150);
-        }       
-
-        vBuf[44][74] = '*';
-    }
+    void SetPos(int x, int y);
 
     // void DrawTitle();
+
+    void HotKeys();
 
     void DrawArea();
 
     void CreateWorld();
 
-    void Refresh();
-
     void RunWorld();
-};
 
+
+
+};

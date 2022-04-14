@@ -1,5 +1,15 @@
 #include "World.h"
 
+void World::SetPos(int x, int y)
+{
+	sprintf_s(coord, "%s%d;%dH", CSI, y, x);
+	printf(coord);
+}
+
+void World::HotKeys()
+{
+}
+
 void World::DrawArea()
 {
 	// Set console code page to UTF-8 so console known how to interpret string data
@@ -25,7 +35,7 @@ void World::DrawArea()
 				if (0 != dwResourceSize)
 				{
 					for (int i = 0; i < strnlen(area, 8915); i++) {
-						cout << area[i];
+						std::cout << area[i];
 					}
 				}
 			}
@@ -35,40 +45,8 @@ void World::DrawArea()
 	setvbuf(stdout, NULL, _IONBF, 0);
 }
 
-void World::Refresh()
-{
-	this_thread::sleep_for(chrono::milliseconds(10));	
-	GameObject tool; // for tools
-
-	tool.SetPos(0, 0);
-
-	for (int y = 0; y < 45; y++)
-	{
-		for (int x = 0; x < 150; x++)
-		{
-			cout << vBuf[y][x];
-		}
-	}
-
-	while (worldIsRun)
-	{
-		for (int i = 0; i < 45; i++)
-		{
-			for (int j = 0; j < 150; j++)
-			{
-				if (vBuf2[i][j] == vBuf[i][j])
-				{
-					continue;
-				}
-				cout << vBuf2[i][j];
-			}
-		}
-		cout << flush;
-		copy(vBuf2.begin(), vBuf2.end(), vBuf.begin());
-	}
-}
-
 void World::CreateWorld() {
+
 	term.Terminal();  // Set virtual terminal settings
 	term.SetScreenSize();
 
@@ -76,23 +54,57 @@ void World::CreateWorld() {
 	printf(CSI "?25l"); // hide cursor blinking
 
 	DrawArea();
-
-	GameObject myGun(vBuf, 5, 3, 15, 15); // Player cannon size and position 
-	/*thread myChar(&MyCharGun::RunGun, myGun);
-	myChar.detach();*/
-
-	thread Ticks(&World::Refresh, this);
-	Ticks.detach();
 }
 
 void World::RunWorld()
 {
 	CreateWorld();
 
-	while (true)
+	MyCharGun* myGun = new MyCharGun(&wData, 5, 3, COLS / 2 - 2, ROWS - 3, '*');		// Player cannon size and position
+
+	objVect.allKnownObjects.push_back(myGun);
+
+	SetPos(0, 0);
+
+	while (worldIsRun)
 	{
+		if (GetAsyncKeyState(VK_SPACE) && bulletGo == false)
+		{
+			bulletGo = true;
+
+			Bullet* bullet = new Bullet(&wData, 1, 1, myGun->_x + myGun->_width / 2, myGun->_y - 1, '|');
+
+			thread shot(&Bullet::MyGunShot, bullet, ref(bulletGo));
+			shot.detach();
+
+			objVect.allKnownObjects.push_back(bullet);
+		}
+
+		myGun->MoveMyGun();
+
+		for (int i = 0; i < objVect.allKnownObjects.size(); i++)
+		{
+			objVect.allKnownObjects[i]->ready = true;
+			objVect.allKnownObjects[i]->DrawObject();
+			objVect.allKnownObjects[i]->ready = false;
+		}
+
+		for (int y = 0; y < ROWS; y++)
+		{
+			for (int x = 0; x < COLS; x++)
+			{
+				if (prevBuf[y][x] == wData.vBuf[y][x])
+				{
+					continue;
+				}
+				SetPos(x, y);
+				cout << wData.vBuf[y][x];
+			}
+		}
+		cout << flush;
+		memcpy(prevBuf, wData.vBuf, ROWS * COLS);
+		Sleep(5);
 	}
 
 	printf(CSI "?1049l"); // enable main buffer
 }
-
