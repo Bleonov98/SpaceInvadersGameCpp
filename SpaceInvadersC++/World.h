@@ -14,6 +14,7 @@ private:
 
     bool worldIsRun = true;
     bool bulletGo = false;
+    bool bulletMiss = false;
 
     HINSTANCE hInstance;
 

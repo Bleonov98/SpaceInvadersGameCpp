@@ -14,5 +14,4 @@ void MyCharGun::MoveMyGun()
 				_x--;
 			}
 		}
-		Sleep(15);
 }

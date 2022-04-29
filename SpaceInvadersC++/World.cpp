@@ -62,22 +62,36 @@ void World::RunWorld()
 
 	MyCharGun* myGun = new MyCharGun(&wData, 5, 3, COLS / 2 - 2, ROWS - 3, '*');		// Player cannon size and position
 
+	for (int i = 1; i < 6; i++)
+	{
+		for (int j = 1; j < 4; j++)
+		{
+			Enemies* enemy = new Enemies(&wData, 3, 2, 25 * i, 4 * j - 1, '#');
+
+			thread enemyGo(&Enemies::MoveEnemy, enemy);
+			enemyGo.detach();
+
+			objVect.allKnownObjects.push_back(enemy);
+		}
+	}
+
 	objVect.allKnownObjects.push_back(myGun);
 
 	SetPos(0, 0);
 
 	while (worldIsRun)
-	{
+	{	
 		if (GetAsyncKeyState(VK_SPACE) && bulletGo == false)
 		{
 			bulletGo = true;
+			bulletMiss = false;
 
-			Bullet* bullet = new Bullet(&wData, 1, 1, myGun->_x + myGun->_width / 2, myGun->_y - 1, '|');
+			Bullet* myBullet = new Bullet(&wData, 1, 1, myGun->_x + myGun->_width / 2, myGun->_y - 1, '|');
 
-			thread shot(&Bullet::MyGunShot, bullet, ref(bulletGo));
+			thread shot(&Bullet::MyGunShot, myBullet, ref(bulletGo));
 			shot.detach();
 
-			objVect.allKnownObjects.push_back(bullet);
+			objVect.allKnownObjects.push_back(myBullet);
 		}
 
 		myGun->MoveMyGun();
@@ -87,6 +101,21 @@ void World::RunWorld()
 			objVect.allKnownObjects[i]->ready = true;
 			objVect.allKnownObjects[i]->DrawObject();
 			objVect.allKnownObjects[i]->ready = false;
+		}
+
+		for (int i = 0; i < objVect.allKnownObjects.size() - 1; i++) {
+			if ( ((objVect.allKnownObjects[i]->_x == objVect.allKnownObjects.back()->_x) &&
+				(objVect.allKnownObjects[i]->_y == objVect.allKnownObjects.back()->_y)) ||
+				((objVect.allKnownObjects[i]->_x + 1 == objVect.allKnownObjects.back()->_x) &&
+				(objVect.allKnownObjects[i]->_y + 1 == objVect.allKnownObjects.back()->_y)) ||
+				((objVect.allKnownObjects[i]->_x + 2 == objVect.allKnownObjects.back()->_x) &&
+				(objVect.allKnownObjects[i]->_y + 2 == objVect.allKnownObjects.back()->_y)) )
+			{
+				objVect.allKnownObjects[i]->death = true;
+				objVect.allKnownObjects.back()->death = true;
+				objVect.allKnownObjects.erase(objVect.allKnownObjects.begin() + i);
+				objVect.allKnownObjects.pop_back();
+			}
 		}
 
 		for (int y = 0; y < ROWS; y++)
@@ -101,9 +130,9 @@ void World::RunWorld()
 				cout << wData.vBuf[y][x];
 			}
 		}
-		cout << flush;
+
 		memcpy(prevBuf, wData.vBuf, ROWS * COLS);
-		Sleep(5);
+		Sleep(25);
 	}
 
 	printf(CSI "?1049l"); // enable main buffer
