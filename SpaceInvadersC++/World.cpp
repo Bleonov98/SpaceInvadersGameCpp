@@ -58,66 +58,145 @@ void World::CreateWorld() {
 
 void World::RunWorld()
 {
+	srand(time(NULL));
 	CreateWorld();
 
 	MyCharGun* myGun = new MyCharGun(&wData, 5, 3, COLS / 2 - 2, ROWS - 3, '*');		// Player cannon size and position
+	objVect.allKnownObjects.push_back(myGun);
 
 	for (int i = 1; i < 6; i++)
 	{
 		for (int j = 1; j < 4; j++)
 		{
-			Enemies* enemy = new Enemies(&wData, 3, 2, 25 * i, 4 * j - 1, '#');
-
-			thread enemyGo(&Enemies::MoveEnemy, enemy);
-			enemyGo.detach();
+			enemy = new Enemies(&wData, 3, 2, 25 * i, 4 * j - 1, '#');;
 
 			objVect.allKnownObjects.push_back(enemy);
+			enemyList.push_back(enemy);
 		}
 	}
-
-	objVect.allKnownObjects.push_back(myGun);
 
 	SetPos(0, 0);
 
 	while (worldIsRun)
 	{	
-		if (GetAsyncKeyState(VK_SPACE) && bulletGo == false)
+     	if (tick % level == 0) {  	   		
+			for (int i = 0; i < enemyList.size(); i++)
+			{
+				if (!enemyList[i]->death) {
+					enemyList[i]->MoveEnemy();
+				}
+			}
+		}
+		// Move Enemies
+
+		myGun->MoveMyGun(); // Move my Gun
+
+		if (GetAsyncKeyState(VK_SPACE) && (!bulletGo))
 		{
 			bulletGo = true;
-			bulletMiss = false;
 
 			Bullet* myBullet = new Bullet(&wData, 1, 1, myGun->_x + myGun->_width / 2, myGun->_y - 1, '|');
 
 			thread shot(&Bullet::MyGunShot, myBullet, ref(bulletGo));
 			shot.detach();
 
+			myBulletList.push_back(myBullet);
 			objVect.allKnownObjects.push_back(myBullet);
 		}
+		// myBulletGo settings
 
-		myGun->MoveMyGun();
+		if (enemyBulletList.empty() && (!enemyList.empty()))
+		{
+			int containerForBullets = 0;
+			for (int i = 0; i < enemyList.size(); i++)
+			{
+				if ((enemyList[i]->enemyShotTimer == 5) && (!enemyList[i]->enemyBulletGo)) {
+
+					enemyList[i]->enemyBulletGo = true;
+
+					containerForBullets = i;
+
+					break;
+				}
+			}
+			Bullet* enemyBullet = new Bullet(&wData, 1, 1, enemyList[containerForBullets]->_x + enemyList[containerForBullets]->_width / 2, enemyList[containerForBullets]->_y + 2, '0');
+
+			objVect.allKnownObjects.push_back(enemyBullet);
+			enemyBulletList.push_back(enemyBullet);
+
+			thread enemyGunShot(&Bullet::EnemyGunShot, enemyBullet, ref(enemyList[containerForBullets]->enemyBulletGo));
+			enemyGunShot.detach();
+		}
+		// enemyBulletGo settings
+
+        if ((!myBulletList.empty()) && (!enemyList.empty())) {
+
+ 		for (int i = 0; i < enemyList.size(); i++) {
+				if (((enemyList[i]->_x == myBulletList.back()->_x) &&
+					(enemyList[i]->_y == myBulletList.back()->_y)) ||
+					((enemyList[i]->_x + 1 == myBulletList.back()->_x) &&
+						(enemyList[i]->_y + 1 == myBulletList.back()->_y)) ||
+					((enemyList[i]->_x + 2 == myBulletList.back()->_x) &&
+						(enemyList[i]->_y + 2 == myBulletList.back()->_y)))
+				{
+					enemyList[i]->death = true;
+					enemyList.erase(enemyList.begin() + i);
+
+					myBulletList.back()->death = true;
+
+					break;
+				}
+
+			}
+		}
+		// enemy die settings
+
+		if (!myBulletList.empty()) {
+			for (int i = 0; i < myBulletList.size(); i++)
+			{
+				if (myBulletList[i]->death == true) {
+					myBulletList.erase(myBulletList.begin() + i);
+				}
+				else myBulletList[i]->ready = true;
+			}
+		}
+		// myBullet vector erase and myBullet object go
+
+		if (!enemyBulletList.empty()) {
+			for (int i = 0; i < enemyBulletList.size(); i++)
+			{
+				if (enemyBulletList[i]->death == true) {
+					enemyBulletList.erase(enemyBulletList.begin() + i);
+				}
+				else enemyBulletList[i]->ready = true;
+			}
+		}
+		// enemyBullet vector erase and enemyBullet object go
+
 
 		for (int i = 0; i < objVect.allKnownObjects.size(); i++)
 		{
-			objVect.allKnownObjects[i]->ready = true;
-			objVect.allKnownObjects[i]->DrawObject();
-			objVect.allKnownObjects[i]->ready = false;
-		}
-
-		for (int i = 0; i < objVect.allKnownObjects.size() - 1; i++) {
-			if ( ((objVect.allKnownObjects[i]->_x == objVect.allKnownObjects.back()->_x) &&
-				(objVect.allKnownObjects[i]->_y == objVect.allKnownObjects.back()->_y)) ||
-				((objVect.allKnownObjects[i]->_x + 1 == objVect.allKnownObjects.back()->_x) &&
-				(objVect.allKnownObjects[i]->_y + 1 == objVect.allKnownObjects.back()->_y)) ||
-				((objVect.allKnownObjects[i]->_x + 2 == objVect.allKnownObjects.back()->_x) &&
-				(objVect.allKnownObjects[i]->_y + 2 == objVect.allKnownObjects.back()->_y)) )
-			{
-				objVect.allKnownObjects[i]->death = true;
-				objVect.allKnownObjects.back()->death = true;
+			if (objVect.allKnownObjects[i]->death == true) {
+				objVect.allKnownObjects[i]->EraseObject();
 				objVect.allKnownObjects.erase(objVect.allKnownObjects.begin() + i);
-				objVect.allKnownObjects.pop_back();
 			}
 		}
+		// All objects vector settings (if some object was died = erase from vect;
 
+
+		for (int i = 0; i < objVect.allKnownObjects.size() - enemyBulletList.size() - myBulletList.size(); i++)
+		{
+			objVect.allKnownObjects[i]->DrawObject();
+		}
+		// Draw all moving object (except threads)
+
+		for (int i = 0; i < objVect.allKnownObjects.size(); i++)
+		{
+			while ((objVect.allKnownObjects[i]->ready) && (!objVect.allKnownObjects[i]->death)) {}
+		}
+		// waiting for all objects drawing func (ready and alive)
+
+		
 		for (int y = 0; y < ROWS; y++)
 		{
 			for (int x = 0; x < COLS; x++)
@@ -132,7 +211,11 @@ void World::RunWorld()
 		}
 
 		memcpy(prevBuf, wData.vBuf, ROWS * COLS);
-		Sleep(25);
+		// double buffering output function
+
+		Sleep(15);
+
+		tick++;
 	}
 
 	printf(CSI "?1049l"); // enable main buffer

@@ -22,77 +22,68 @@ void GameObject::EraseObject()
 	}
 }
 
-void GameObject::ObjectDeath()
-{
-	EraseObject();
-
-	cout << "X";
-
-}
 
 void Bullet::MyGunShot(bool &bulletGo)
 {
-	while (_y >= 0 && death != true) {
+	death = false;
+	while (_y >= 3 && death != true) {
 		if (ready)
 		{
-			this_thread::sleep_for(milliseconds(5));
 			EraseObject();
 			_y--;
+			DrawObject();
+			ready = false;
 		}
 	}
 
+	if (death != true) {
+		death = true;
+	}
+	
 	bulletGo = false;
+}
+
+void Bullet::EnemyGunShot(bool &enemyBulletGo)
+{
+	death = false;
+	while (_y <= 45 && death != true) {
+		if (ready)
+		{
+			EraseObject();
+			_y++;
+			DrawObject();
+			ready = false;
+			this_thread::sleep_for(milliseconds(20));
+		}
+	}
+
+	enemyBulletGo = false;
+	death = true;
 }
 
 void Enemies::MoveEnemy()
 {
-	mtx.lock();
-	int tick = 1;
-	loop = 0;
-	while (loop != 4 && death != true) {
-		while (tick != 20 && death != true) {
-			if (ready) {
-				this_thread::sleep_for(milliseconds(100));
-				EraseObject();
-				_x--;
-				this_thread::sleep_for(milliseconds(300 - loop * 70));
-				tick++;
-			}
-		}
-
-		if (death != true) {
-			this_thread::sleep_for(milliseconds(100));
-			EraseObject();
-			_y += 4;
-			this_thread::sleep_for(milliseconds(300 - loop * 70));
-			tick++;
-		}
+	    EraseObject();
 		
+		enemyShotTimer = rand() % 10;
 
-		while (tick != 43 && death != true) {
-			if (ready) {
-				this_thread::sleep_for(milliseconds(100));
-				EraseObject();
-				_x++;
-				this_thread::sleep_for(milliseconds(300 - loop * 70));
-				tick++;
-			}
+		if (tick < 20 && (loop == 1 || loop == 3 || loop == 5 || loop == 7)) {
+			_x--;
 		}
 
-		if (death != true) {
-			this_thread::sleep_for(milliseconds(100));
-			EraseObject();
+		if (tick < 20 && (loop == 2 || loop == 4 || loop == 6 || loop == 8)) {
+			_x++;
+		}
+
+		if (tick == 20) {
+			loop++;
 			_y += 4;
-			this_thread::sleep_for(milliseconds(300 - loop * 70));
-			tick++;
+			tick = 0;
 		}
-				
-		tick = 1;
-		loop++;
-	}
 
-	this_thread::sleep_for(milliseconds(50));
-	EraseObject();
-	
-	mtx.unlock();
+		tick++;
+
+		if (loop >= 8 && tick >= 20 && (!death)) {
+			death = true;
+		}
 }

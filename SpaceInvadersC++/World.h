@@ -8,13 +8,20 @@ private:
 
     wd wData;
     vct objVect;
+    Enemies* enemy;
+
+    vector <Bullet*> myBulletList;
+    vector <Bullet*> enemyBulletList;
+    vector <Enemies*> enemyList;
 
     char prevBuf[ROWS][COLS]{ ' ' };
     char coord[50];
 
     bool worldIsRun = true;
     bool bulletGo = false;
-    bool bulletMiss = false;
+
+    int level = 8;
+    int tick = 0;
 
     HINSTANCE hInstance;
 

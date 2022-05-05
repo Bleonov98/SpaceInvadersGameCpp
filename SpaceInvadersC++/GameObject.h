@@ -21,8 +21,6 @@ public:
 
 	void EraseObject();
 
-	void ObjectDeath();
-
 protected:
 
 	wd* _wData;
@@ -59,7 +57,10 @@ class Enemies: public GameObject
 {
 
 public:
-	int loop;
+	int tick = 1;
+	int loop = 1;
+	int enemyShotTimer = rand() % 20;
+	bool enemyBulletGo = false;
 
 	Enemies(wd* wData, int width, int height, int x, int y, char symbol) : GameObject(wData, width, height, x, y, symbol) {
 	};
@@ -84,5 +85,7 @@ public:
 	};
 
 	void MyGunShot(bool &bulletGo);
+
+	void EnemyGunShot(bool &enemyBulletGo);
 
 };
