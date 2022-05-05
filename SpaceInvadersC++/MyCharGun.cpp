@@ -15,3 +15,22 @@ void MyCharGun::MoveMyGun()
 			}
 		}
 }
+
+void MyCharGun::myGunDeath(bool &worldIsRun)
+{
+	if (death && lives > 0) {
+
+		Sleep(2000);
+
+		lives--;
+
+		if (lives > 0) {
+			death = false;
+		}
+		else death = true;
+	}
+
+	if (death) {
+		worldIsRun = false;
+	}
+}

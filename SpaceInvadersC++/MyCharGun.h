@@ -9,5 +9,10 @@ public:
 	};
 
 	void MoveMyGun();
+
+	void myGunDeath(bool& worldIsRun);
+
+protected:
+	int lives = 3;
 };
 

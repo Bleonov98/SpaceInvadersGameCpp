@@ -55,10 +55,10 @@ void Bullet::EnemyGunShot(bool &enemyBulletGo)
 			ready = false;
 			this_thread::sleep_for(milliseconds(20));
 		}
-	}
 
-	enemyBulletGo = false;
+	}
 	death = true;
+	enemyBulletGo = false;
 }
 
 void Enemies::MoveEnemy()

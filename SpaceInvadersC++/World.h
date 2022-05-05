@@ -9,6 +9,7 @@ private:
     wd wData;
     vct objVect;
     Enemies* enemy;
+    Bullet* enemyBullet;
 
     vector <Bullet*> myBulletList;
     vector <Bullet*> enemyBulletList;
@@ -20,8 +21,9 @@ private:
     bool worldIsRun = true;
     bool bulletGo = false;
 
-    int level = 8;
-    int tick = 0;
+    int level = 10;
+    int tick = 1;
+    int score = 0;
 
     HINSTANCE hInstance;
 
