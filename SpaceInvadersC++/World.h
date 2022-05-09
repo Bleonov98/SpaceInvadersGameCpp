@@ -8,21 +8,22 @@ private:
 
     wd wData;
     vct objVect;
-    Enemies* enemy;
+
     Bullet* enemyBullet;
+    Enemies* enemy;
+    Wall* wall;
 
     vector <Bullet*> myBulletList;
     vector <Bullet*> enemyBulletList;
     vector <Enemies*> enemyList;
+    vector <Wall*> wallList;
 
     char prevBuf[ROWS][COLS]{ ' ' };
     char coord[50];
 
-    bool worldIsRun = true;
+    bool worldIsRun = true, pause = false, restart = false;
     bool bulletGo = false;
 
-    int level = 10;
-    int tick = 1;
     int score = 0;
 
     HINSTANCE hInstance;
@@ -121,14 +122,16 @@ public:
 
     // void DrawTitle();
 
+    void DrawInfo();
+
+    void EraseLife(int lifes);
+
     void HotKeys();
 
     void DrawArea();
 
     void CreateWorld();
 
-    void RunWorld();
-
-
+    void RunWorld(bool& restart);
 
 };

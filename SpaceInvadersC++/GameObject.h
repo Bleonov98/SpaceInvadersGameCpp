@@ -4,9 +4,6 @@
 class GameObject
 {
 public:
-
-	mutex mtx;
-	
 	int _width, _height, _x, _y;
 	char _symbol;
 	bool ready, death = false;
@@ -17,9 +14,13 @@ public:
 		_wData = wData;
 	};
 
-	void DrawObject();
+	virtual void DrawObject();
 
 	void EraseObject();
+
+	virtual ~GameObject() {
+		delete this;
+	};
 
 protected:
 
@@ -33,7 +34,13 @@ class Wall: public GameObject
 {
 public:
 
+	int parts = _width * _height;
+	vector <vector<pair<int, int>>> destroyWall;
 
+	Wall(wd* wData, int width, int height, int x, int y, char symbol) : GameObject(wData, width, height, x, y, symbol) {
+	};
+
+	void DrawObject();
 };
 
 
@@ -50,7 +57,7 @@ public:
 	Enemies(wd* wData, int width, int height, int x, int y, char symbol) : GameObject(wData, width, height, x, y, symbol) {
 	};
 
-	void MoveEnemy();
+	void MoveEnemy(bool& worldIsRun);
 
 };
 

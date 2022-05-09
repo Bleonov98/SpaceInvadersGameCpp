@@ -3,8 +3,13 @@
 
 int main()
 {
-    World wd;
-    wd.RunWorld();
+    bool restart = false;
+    do
+    {
+        World wd;
+        wd.RunWorld(restart);
+
+    } while (restart);
 
     return 0;
 }

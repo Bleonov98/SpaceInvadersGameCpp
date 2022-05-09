@@ -18,13 +18,13 @@ void MyCharGun::MoveMyGun()
 
 void MyCharGun::myGunDeath(bool &worldIsRun)
 {
-	if (death && lives > 0) {
+	if (death && lifes > 0) {
 
 		Sleep(2000);
 
-		lives--;
+		lifes--;
 
-		if (lives > 0) {
+		if (lifes > 0) {
 			death = false;
 		}
 		else death = true;

@@ -36,10 +36,7 @@ void Bullet::MyGunShot(bool &bulletGo)
 		}
 	}
 
-	if (death != true) {
-		death = true;
-	}
-	
+	death = true;	
 	bulletGo = false;
 }
 
@@ -53,7 +50,6 @@ void Bullet::EnemyGunShot(bool &enemyBulletGo)
 			_y++;
 			DrawObject();
 			ready = false;
-			this_thread::sleep_for(milliseconds(20));
 		}
 
 	}
@@ -61,7 +57,7 @@ void Bullet::EnemyGunShot(bool &enemyBulletGo)
 	enemyBulletGo = false;
 }
 
-void Enemies::MoveEnemy()
+void Enemies::MoveEnemy(bool& worldIsRun)
 {
 	    EraseObject();
 		
@@ -71,7 +67,7 @@ void Enemies::MoveEnemy()
 			_x--;
 		}
 
-		if (tick < 20 && (loop == 2 || loop == 4 || loop == 6 || loop == 8)) {
+		if (tick < 20 && (loop == 2 || loop == 4 || loop == 6)) {
 			_x++;
 		}
 
@@ -83,7 +79,23 @@ void Enemies::MoveEnemy()
 
 		tick++;
 
-		if (loop >= 8 && tick >= 20 && (!death)) {
+		if (loop >= 7 && tick >= 20 && (!death)) { // if enemies go out from game map = they destroy n win;
 			death = true;
+			worldIsRun = false;
+		}
+}
+
+void Wall::DrawObject()
+{
+		for (int i = 0; i < _height; i++)
+		{
+			for (int j = 0; j < _width; j++)
+			{
+				_wData->vBuf[_y + i][_x + j] = _symbol;
+				if ((destroyWall[i][j].first == _x + j) && (destroyWall[i][j].second == _y + i))
+				{
+					_wData->vBuf[_y + i][_x + j] = 0x20;
+				}
+			}
 		}
 }
