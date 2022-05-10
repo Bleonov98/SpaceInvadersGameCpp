@@ -20,6 +20,11 @@ void MyCharGun::myGunDeath(bool &worldIsRun)
 {
 	if (death && lifes > 0) {
 
+		thread GoSoundDieMyself([&]
+			{ PlaySound(MAKEINTRESOURCE(IDR_WAVE3), NULL, SND_RESOURCE); }
+		);
+		GoSoundDieMyself.detach();
+
 		Sleep(2000);
 
 		lifes--;

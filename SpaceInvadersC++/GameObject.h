@@ -52,7 +52,6 @@ public:
 	int tick = 1;
 	int loop = 1;
 	int enemyShotTimer = rand() % 10;
-	bool enemyBulletGo = false;
 
 	Enemies(wd* wData, int width, int height, int x, int y, char symbol) : GameObject(wData, width, height, x, y, symbol) {
 	};

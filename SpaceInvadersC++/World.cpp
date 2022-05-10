@@ -6,6 +6,56 @@ void World::SetPos(int x, int y)
 	printf(coord);
 }
 
+void World::DrawTitle()
+{
+	PlaySound(MAKEINTRESOURCE(IDR_WAVE4), NULL, SND_RESOURCE | SND_ASYNC);
+
+	HRSRC hResource = FindResource(hInstance, MAKEINTRESOURCE(IDR_TEXT2), L"TEXT");
+
+	if (hResource)
+	{
+		HGLOBAL hLoadedResource = LoadResource(hInstance, hResource);
+
+		if (hLoadedResource)
+		{
+			LPCSTR title = (LPCSTR)LockResource(hLoadedResource);
+
+			if (title)
+			{
+				DWORD dwResourceSize = SizeofResource(hInstance, hResource);
+
+				if (0 != dwResourceSize)
+				{
+					int j = 0;
+					int k = 1;
+					for (int i = 0; i < 53; i++)
+					{
+						for (; j < 152.3 * k; j++)
+						{
+							cout << title[j];
+						}
+						k++;
+						Sleep(20);
+					}
+				}
+			}
+		}
+	}
+
+	while (!GetAsyncKeyState(VK_RETURN)) {
+		SetPos(63, 42);
+		cout << "PRESS ENTER TO START";
+		Sleep(650);
+		SetPos(63, 42);
+		cout << "                    ";
+		Sleep(650);
+	}
+
+	PlaySound(NULL, 0, 0);
+
+	system("cls");
+}
+
 void World::DrawInfo()
 {
 	SetPos(17, 52);
@@ -81,6 +131,7 @@ void World::CreateWorld() {
 	printf(CSI "?1049h"); // enable alt buffer
 	printf(CSI "?25l"); // hide cursor blinking
 
+	DrawTitle();
 	DrawArea();
 }
 
@@ -94,16 +145,16 @@ void World::RunWorld(bool &restart)
 	);
 	hotKeys.detach();
 
-	int level = 1;
+	int level = 0;
 	int tick = 1;
 	score = 0;
 
 		MyCharGun* myGun = new MyCharGun(&wData, 5, 3, COLS / 2 - 2, ROWS - 3, '*');		// Player cannon size and position
 		objVect.allKnownObjects.push_back(myGun);
 
-		for (int i = 0; i < 3; i++)
+		for (int i = 0; i < 4; i++)
 		{
-			wall = new Wall(&wData, 10, 3, (50 * (i + 1)) - 30, ROWS - 10, '=');
+			wall = new Wall(&wData, 10, 3, (30 * (i + 1)) - 5, ROWS - 10, '=');
 
 			wallList.push_back(wall);
 			objVect.allKnownObjects.push_back(wall);
@@ -121,6 +172,7 @@ void World::RunWorld(bool &restart)
      	while (worldIsRun) 
 		{
 			if (enemyList.empty()) {
+				enemyList.clear();
 				for (int i = 1; i < 6; i++)
 				{
 					for (int j = 1; j < 4; j++)
@@ -131,34 +183,21 @@ void World::RunWorld(bool &restart)
 						enemyList.push_back(enemy);
 					}
 				}
+				level += 1;
 			}
 			// enemies size and position
 
 			while (pause) {}
 
-			if (tick % (11 - level) == 0) {
+			if (tick % (15 - level) == 0) {
 				for (int i = 0; i < enemyList.size(); i++)
 				{
 					if (!enemyList[i]->death) {
 						enemyList[i]->MoveEnemy(worldIsRun);
 					}
 				}
-
-				if (enemyList.empty()) {
-					for (int i = 1; i < 6; i++)
-					{
-						for (int j = 1; j < 4; j++)
-						{
-							enemy = new Enemies(&wData, 3, 2, 25 * i, 4 * j - 1, '#');
-
-							objVect.allKnownObjects.push_back(enemy);
-							enemyList.push_back(enemy);
-						}
-					}
-					level -= 1;
-				}
 			}
-			// Move and spawn Enemies
+			// Move enemies
 
 			myGun->MoveMyGun(); // Move my Gun
 
@@ -168,11 +207,13 @@ void World::RunWorld(bool &restart)
 
 				Bullet* myBullet = new Bullet(&wData, 1, 1, myGun->_x + myGun->_width / 2, myGun->_y - 1, '|');
 
-				thread shot(&Bullet::MyGunShot, myBullet, ref(bulletGo));
-				shot.detach();
-
 				myBulletList.push_back(myBullet);
 				objVect.allKnownObjects.push_back(myBullet);
+
+				thread GoSoundMyBullet([&]
+					{ PlaySound(MAKEINTRESOURCE(IDR_WAVE1), NULL, SND_RESOURCE); }
+				);
+				GoSoundMyBullet.detach();
 			}
 			// myBulletGo settings
 
@@ -181,9 +222,9 @@ void World::RunWorld(bool &restart)
 				int containerForBullets = 0;
 				for (int i = 0; i < enemyList.size(); i++)
 				{
-					if ((enemyList[i]->enemyShotTimer == 5) && (!enemyList[i]->enemyBulletGo)) {
+					if ((enemyList[i]->enemyShotTimer == 5) && (!enemyBulletGo)) {
 
-						enemyList[i]->enemyBulletGo = true;
+						enemyBulletGo = true;
 
 						containerForBullets = i;
 
@@ -194,9 +235,6 @@ void World::RunWorld(bool &restart)
 
 				objVect.allKnownObjects.push_back(enemyBullet);
 				enemyBulletList.push_back(enemyBullet);
-
-				thread enemyGunShot(&Bullet::EnemyGunShot, enemyBullet, ref(enemyList[containerForBullets]->enemyBulletGo));
-				enemyGunShot.detach();
 			}
 			// enemyBulletGo settings
 
@@ -214,8 +252,15 @@ void World::RunWorld(bool &restart)
 								enemyList.erase(enemyList.begin() + i);
 
 								myBulletList.back()->death = true;
+								bulletGo = false;
 
 								score += 20;
+
+
+								thread GoSoundEnemyDie([&]
+									{ PlaySound(MAKEINTRESOURCE(IDR_WAVE2), NULL, SND_RESOURCE); }
+								);
+								GoSoundEnemyDie.detach();
 
 								enemyDieBreak = true;
 								break;
@@ -239,6 +284,7 @@ void World::RunWorld(bool &restart)
 							myGun->myGunDeath(worldIsRun);
 
 							enemyBullet->death = true;
+							enemyBulletGo = false;
 							enemyBulletList.erase(enemyBulletList.begin());
 
 							EraseLife(myGun->lifes);
@@ -270,6 +316,7 @@ void World::RunWorld(bool &restart)
 								wallList[i]->parts--; 
 
 								myBulletList.back()->death = true;
+								bulletGo = false;
 							}
 							else if ((!enemyBulletList.empty()) && ((wallList[i]->_x + width == enemyBulletList.back()->_x) && (wallList[i]->_y + height == enemyBulletList.back()->_y))
 								&& (wallList[i]->destroyWall[height][width].first != enemyBulletList.back()->_x) && (wallList[i]->destroyWall[height][width].second != enemyBulletList.back()->_y)) {
@@ -280,6 +327,7 @@ void World::RunWorld(bool &restart)
 								wallList[i]->parts--;
 
 								enemyBulletList.back()->death = true;
+								enemyBulletGo = false;
 							}
 						}
 					}
@@ -298,7 +346,7 @@ void World::RunWorld(bool &restart)
 					if (myBulletList[i]->death == true) {
 						myBulletList.erase(myBulletList.begin() + i);
 					}
-					else myBulletList[i]->ready = true;
+					else myBulletList[i]->MyGunShot(bulletGo);
 				}
 			}
 			// myBullet vector erase and myBullet object go
@@ -309,7 +357,7 @@ void World::RunWorld(bool &restart)
 					if (enemyBulletList[i]->death == true) {
 						enemyBulletList.erase(enemyBulletList.begin() + i);
 					}
-					else enemyBulletList[i]->ready = true;
+					else enemyBulletList[i]->EnemyGunShot(enemyBulletGo);
 				}
 			}
 			// enemyBullet vector erase and enemyBullet object go
@@ -333,17 +381,11 @@ void World::RunWorld(bool &restart)
 			}
 			// All objects vector settings (if some object was died = erase from vect;
 
-			for (int i = 0; i < objVect.allKnownObjects.size() - enemyBulletList.size() - myBulletList.size(); i++)
+			for (int i = 0; i < objVect.allKnownObjects.size(); i++)
 			{
 				objVect.allKnownObjects[i]->DrawObject();
 			}
-			// Draw all moving object (except threads)
-
-			for (int i = 0; i < objVect.allKnownObjects.size(); i++)
-			{
-				while ((objVect.allKnownObjects[i]->ready) && (!objVect.allKnownObjects[i]->death)) {}
-			}
-			// waiting for all objects drawing func (ready and alive)
+			// Draw all object
 
 			for (int y = 0; y < ROWS; y++)
 			{
@@ -369,6 +411,10 @@ void World::RunWorld(bool &restart)
 			else Sleep(15);
 
 			tick++;
+
+			if (level == 10) {
+				break;
+			}
 		}
 
 		if (!objVect.allKnownObjects.empty()) {
@@ -393,18 +439,25 @@ void World::RunWorld(bool &restart)
 		myBulletList.clear();
 		enemyBulletList.clear();
 
-		SetPos(70, 22);
-		cout << "GAME OVER";
+		bool pressed = false;
+
+		if (level == 10) {
+			SetPos(65, 22);
+			cout << "CONGRATULATIONS! YOU WIN";
+		}
+		else {
+			SetPos(70, 22);
+			cout << "GAME OVER";
+			SetPos(68, 25);
+			cout << "LEVEL: " << level << "/10";
+		}
 		SetPos(70, 24);
 		cout << "SCORE:" << score;
-		SetPos(70, 25);
-		cout << "LEVEL: " << level << "/10";
 		SetPos(65, 28);
 		cout << "PRESS ENTER TO RESTART";
 		SetPos(65, 29);
 		cout << "PRESS ESC TO EXIT";
 
-		bool pressed = false;
 		do {
 			if (GetAsyncKeyState(VK_RETURN)) {
 				restart = true;
@@ -415,7 +468,6 @@ void World::RunWorld(bool &restart)
 				pressed = true;
 			}
 		} while (!pressed);
-		
 
 	 printf(CSI "?1049l"); // enable main buffer
 }

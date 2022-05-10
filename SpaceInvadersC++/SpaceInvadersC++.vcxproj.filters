@@ -55,5 +55,21 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\SpaceInvadersArea.txt" />
+    <Text Include="..\..\..\SpaceInvadersC++\SpaceInvadersArea.txt" />
+    <Text Include="..\SpaceInvadersTitle.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="..\shoot.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="..\invaderkilled.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="..\explosion.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
+    <Media Include="..\TitleSnd.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
   </ItemGroup>
 </Project>

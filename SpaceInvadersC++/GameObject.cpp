@@ -25,36 +25,28 @@ void GameObject::EraseObject()
 
 void Bullet::MyGunShot(bool &bulletGo)
 {
-	death = false;
-	while (_y >= 3 && death != true) {
-		if (ready)
-		{
-			EraseObject();
-			_y--;
-			DrawObject();
-			ready = false;
-		}
+	if (_y > 3) {
+		EraseObject();
+		_y--;
 	}
-
-	death = true;	
-	bulletGo = false;
+	
+	if (_y == 3) {
+		bulletGo = false;
+		death = true;
+	}
 }
 
 void Bullet::EnemyGunShot(bool &enemyBulletGo)
 {
-	death = false;
-	while (_y <= 45 && death != true) {
-		if (ready)
-		{
+	if (_y <= 45) {
 			EraseObject();
 			_y++;
-			DrawObject();
-			ready = false;
-		}
-
 	}
-	death = true;
-	enemyBulletGo = false;
+	
+	if (_y == 46) {
+		enemyBulletGo = false;
+		death = true;
+	}
 }
 
 void Enemies::MoveEnemy(bool& worldIsRun)

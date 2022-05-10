@@ -23,6 +23,7 @@ private:
 
     bool worldIsRun = true, pause = false, restart = false;
     bool bulletGo = false;
+    bool enemyBulletGo = false;
 
     int score = 0;
 
@@ -120,7 +121,7 @@ public:
 
     void SetPos(int x, int y);
 
-    // void DrawTitle();
+    void DrawTitle();
 
     void DrawInfo();
 

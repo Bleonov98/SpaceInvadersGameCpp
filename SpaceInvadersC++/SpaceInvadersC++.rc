@@ -52,6 +52,22 @@ END
 
 IDR_TEXT1               TEXT                    "C:\\Users\\Borys\\source\\repos\\SpaceInvadersC++\\SpaceInvadersArea.txt"
 
+IDR_TEXT2               TEXT                    "C:\\Users\\Borys\\source\\repos\\Bleonov98\\SpaceInvadersGameCpp\\SpaceInvadersTitle.txt"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// WAVE
+//
+
+IDR_WAVE1               WAVE                    "C:\\Users\\Borys\\source\\repos\\Bleonov98\\SpaceInvadersGameCpp\\shoot.wav"
+
+IDR_WAVE2               WAVE                    "C:\\Users\\Borys\\source\\repos\\Bleonov98\\SpaceInvadersGameCpp\\invaderkilled.wav"
+
+IDR_WAVE3               WAVE                    "C:\\Users\\Borys\\source\\repos\\Bleonov98\\SpaceInvadersGameCpp\\explosion.wav"
+
+IDR_WAVE4               WAVE                    "C:\\Users\\Borys\\source\\repos\\Bleonov98\\SpaceInvadersGameCpp\\TitleSnd.wav"
+
 #endif    // Russian (Russia) resources
 /////////////////////////////////////////////////////////////////////////////
 

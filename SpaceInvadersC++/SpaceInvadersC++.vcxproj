@@ -156,7 +156,15 @@
     <ResourceCompile Include="SpaceInvadersC++.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="..\..\..\SpaceInvadersC++\SpaceInvadersArea.txt" />
     <Text Include="..\SpaceInvadersArea.txt" />
+    <Text Include="..\SpaceInvadersTitle.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="..\explosion.wav" />
+    <Media Include="..\invaderkilled.wav" />
+    <Media Include="..\shoot.wav" />
+    <Media Include="..\TitleSnd.wav" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
