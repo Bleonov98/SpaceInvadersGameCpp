@@ -50,7 +50,7 @@ END
 // TEXT
 //
 
-IDR_TEXT1               TEXT                    "C:\\Users\\Borys\\source\\repos\\SpaceInvadersC++\\SpaceInvadersArea.txt"
+IDR_TEXT1               TEXT                    "..\\SpaceInvadersArea.txt"
 
 IDR_TEXT2               TEXT                    "C:\\Users\\Borys\\source\\repos\\Bleonov98\\SpaceInvadersGameCpp\\SpaceInvadersTitle.txt"
 
